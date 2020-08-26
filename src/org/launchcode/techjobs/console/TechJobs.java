@@ -10,7 +10,7 @@ public class TechJobs {
 
     private static Scanner in = new Scanner(System.in);
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
 
         // Initialize our field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
@@ -60,9 +60,9 @@ public class TechJobs {
                 String searchTerm = in.nextLine();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
-                } else {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
+                }  else {
+                    findByValue(searchField, searchTerm);
                 }
             }
         }
@@ -102,7 +102,7 @@ public class TechJobs {
                 validChoice = true;
             }
 
-        } while(!validChoice);
+        } while (!validChoice);
 
         return choiceKeys[choiceIdx];
     }
@@ -112,17 +112,43 @@ public class TechJobs {
 
         ArrayList<HashMap<String, String>> jobData = JobData.findAll();
 
-            for (int i = 0; i < jobData.size(); i++) {
-                HashMap jobList = jobData.get(i);
-                System.out.println("\n"+ "****");
+        for (int i = 0; i < jobData.size(); i++) {
+            HashMap jobList = jobData.get(i);
+            System.out.println("\n" + "****");
 
-                for (Object j : jobList.keySet()) {
-                    System.out.println(j + ": " + jobList.get(j));
-                }
-                System.out.println("****");
-
+            for (Object j : jobList.keySet()) {
+                System.out.println(j + ": " + jobList.get(j));
             }
+            System.out.println("****");
+        }
 
+    }
 
+    public static void findByValue(String column, String value) {
+
+        ArrayList<HashMap<String, String>> jobData = JobData.findAll();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> row : jobData) {
+
+            String aValue = row.get(column);
+
+            if (aValue.contains(value)) {
+                jobs.add(row);
+            }
+        }
+        for (int i = 0; i < jobs.size(); i++) {
+            HashMap jobList = jobs.get(i);
+            System.out.println("\n" + "****");
+
+            for(Object j : jobList.keySet()) {
+                System.out.println(j + ": " + jobList.get(j));
+            }
+            System.out.println("****");
+        }
+        if (jobs.size() <= 0) {
+            System.out.println("No jobs found in search.");
+        }
     }
 }
