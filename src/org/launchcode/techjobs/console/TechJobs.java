@@ -59,11 +59,7 @@ public class TechJobs {
                 System.out.println("\nSearch term: ");
                 String searchTerm = in.nextLine();
 
-                if (searchField.equals("all")) {
-                    printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
-                }  else {
-                    findByValue(searchField, searchTerm);
-                }
+                findByValue(searchField, searchTerm);
             }
         }
     }
@@ -110,10 +106,7 @@ public class TechJobs {
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
 
-        ArrayList<HashMap<String, String>> jobData = JobData.findAll();
-
-        for (int i = 0; i < jobData.size(); i++) {
-            HashMap jobList = jobData.get(i);
+        for (HashMap jobList : someJobs) {
             System.out.println("\n" + "****");
 
             for (Object j : jobList.keySet()) {
@@ -124,31 +117,36 @@ public class TechJobs {
 
     }
 
-    public static void findByValue(String column, String value) {
+    public static void findByValue(String column, String value) { //case-insensitive search through csv file
 
         ArrayList<HashMap<String, String>> jobData = JobData.findAll();
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
-        for (HashMap<String, String> row : jobData) {
-
-            String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
-                jobs.add(row);
+        if (column.equals("all")) {
+            for (HashMap<String, String> row : jobData) {
+                for (String j : row.keySet()) {
+                    String aValue = row.get(j).toLowerCase();
+                    if (aValue.contains(value.toLowerCase())) {
+                        jobs.add(row);
+                    }
+                }
             }
-        }
-        for (int i = 0; i < jobs.size(); i++) {
-            HashMap jobList = jobs.get(i);
-            System.out.println("\n" + "****");
+        } else {
+            for (HashMap<String, String> row : jobData) {
 
-            for(Object j : jobList.keySet()) {
-                System.out.println(j + ": " + jobList.get(j));
+                String aValue = row.get(column).toLowerCase();
+
+                if (aValue.contains(value.toLowerCase())) { //adding found data to list
+                    jobs.add(row);
+                }
             }
-            System.out.println("****");
         }
         if (jobs.size() <= 0) {
             System.out.println("No jobs found in search.");
+        } else {
+            printJobs(jobs);
         }
     }
+
 }
